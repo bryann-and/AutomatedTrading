@@ -6,7 +6,7 @@
     public interface IAuthorization
     {
         /// <summary>
-        /// Tambem conhecida como Token
+        /// Tambem conhecido como Token
         /// </summary>
         string Key { get; set; }
     }
