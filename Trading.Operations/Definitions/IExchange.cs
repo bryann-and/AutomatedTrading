@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Net.Http;
 using Trading.Entities.Definitions;
 
 namespace Trading.Operations.Definitions
@@ -10,11 +9,6 @@ namespace Trading.Operations.Definitions
     public interface IExchange
     {
         /// <summary>
-        /// Usado para fazer todas as requisições, deve ser feito a injeçãoi de dependencia dessa propriedade
-        /// </summary>
-        HttpClient Cliente { get; set; }
-
-        /// <summary>
         /// Armazena as informações de Autorização necessarias para realizar todas as transações disponiveis
         /// </summary>
         IAuthorization Authorization { get; set; }
@@ -24,6 +18,12 @@ namespace Trading.Operations.Definitions
         /// </summary>
         /// <returns>Uma <see cref="List<>"/> de moedas</returns>
         List<ICurrency> GetTicker();
+
+        /// <summary>
+        /// Busca todos os assets disponiveis em conta do usuário
+        /// </summary>
+        /// <returns>Um objeto <see cref="IBalance"/> com o balanço da conta</returns>
+        IBalance GetBalance();
 
         /// <summary>
         /// Cria uma ordem de compra

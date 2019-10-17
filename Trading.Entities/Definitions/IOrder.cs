@@ -1,4 +1,4 @@
-﻿namespace Trading.Operations.Definitions
+﻿namespace Trading.Entities.Definitions
 {
     /// <summary>
     /// Definição do modelo basico de uma ordem de compra/venda
