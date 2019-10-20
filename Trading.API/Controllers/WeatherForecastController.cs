@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Trading.Entities.Definitions;
 using Trading.Operations.Implementation.KuCoin;
 
 namespace Trading.API.Controllers
@@ -23,8 +24,19 @@ namespace Trading.API.Controllers
         public WeatherForecastController(ILogger<WeatherForecastController> logger, IHttpClientFactory cliente)
         {
             _logger = logger;
-            KuCoinExchange teste = new KuCoinExchange(cliente.CreateClient("kucoin"));
-            teste.GetAllTickers();
+            Teste(cliente);
+        }
+
+        public async Task Teste(IHttpClientFactory cliente)
+        {
+            KuCoinExchange teste = new KuCoinExchange(cliente.CreateClient("kucoin"), new KuCoinAuthorization("5dacaa7c1d70990008a7e8f0", "oloquinhomeu") 
+            { 
+                Secret = "whatever"
+            });
+
+            List<BaseAccount> t = await teste.GetAccounts();
+
+            string g = "";
         }
 
         [HttpGet]

@@ -3,11 +3,16 @@
     /// <summary>
     /// Difinição do modelo basico de autorização requerida pelas APIs disponibilizadas pelos Exchanges
     /// </summary>
-    public interface IAuthorization
+    public class BaseAuthorization
     {
         /// <summary>
         /// Tambem conhecido como Token
         /// </summary>
-        string Key { get; set; }
+        public string Key { get; set; }
+
+        public BaseAuthorization(string key)
+        {
+            Key = key;
+        }
     }
 }

@@ -4,15 +4,6 @@ namespace Trading.Operations.Implementation.KuCoin
 {
     public class KuCoinCurrency : BaseCurrency
     {
-        /// <summary>
-        /// Simbolo da moeda, por exemplo: "BTC"
-        /// </summary>
-        public string Symbol { get; set; }
-        /// <summary>
-        /// Nome da moeda, por exemplo "Bitcoin"
-        /// </summary>
-        public string Name { get; set; }
-
         public string SymbolName { get => Name; set => Name = value; }
         public decimal Buy { get; set; }
         public decimal Sell { get; set; }
@@ -23,5 +14,11 @@ namespace Trading.Operations.Implementation.KuCoin
         public decimal Vol { get; set; }
         public decimal VolValue { get; set; }
         public decimal Last { get; set; }
+
+        #region Usado em balanço de conta
+        public double Balance { get; set; }
+        public decimal Holds { get; set; }
+        public string Currency { get => Symbol; set => Symbol = value; }
+        #endregion
     }
 }

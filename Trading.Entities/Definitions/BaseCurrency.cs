@@ -8,10 +8,15 @@
         /// <summary>
         /// Simbolo da moeda, por exemplo: "BTC"
         /// </summary>
-        string Symbol { get; set; }
+        public string Symbol { get; set; }
         /// <summary>
         /// Nome da moeda, por exemplo "Bitcoin"
         /// </summary>
-        string Name { get; set; }
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Usado quando é buscado o balanço da conta
+        /// </summary>
+        public double Avaliable { get;set; }
     }
 }

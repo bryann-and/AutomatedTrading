@@ -10,11 +10,6 @@ namespace Trading.Operations.Definitions
     public interface IExchange
     {
         /// <summary>
-        /// Armazena as informações de Autorização necessarias para realizar todas as transações disponiveis que não são publicas
-        /// </summary>
-        IAuthorization Authorization { get; set; }
-
-        /// <summary>
         /// Busca as informações de valores de uma moeda especifica no Exchange
         /// </summary>
         /// <param name="currency">Um objeto <see cref="BaseCurrency"/> com os dados da moeda a ser buscada as informações</param>
@@ -28,10 +23,23 @@ namespace Trading.Operations.Definitions
         Task<List<BaseCurrency>> GetAllTickers();
 
         /// <summary>
-        /// Busca todos os assets disponiveis em conta do usuário
+        /// Busca todos os assets disponiveis em todas as contas do usuário
         /// </summary>
-        /// <returns>Um objeto <see cref="IBalance"/> com o balanço da conta</returns>
-        IBalance GetBalance();
+        /// <returns>Um objeto <see cref="BaseBalance"/> com o balanço da conta</returns>
+        BaseBalance GetBalance();
+
+        /// <summary>
+        /// Busca todos os assets disponiveis em uma conta especifica
+        /// </summary>
+        /// <param name="account">A conta que se deseja buscar o balanço</param>
+        /// <returns>Um objeto <see cref="BaseBalance"/> com o balanço da conta</returns>
+        Task<BaseBalance> GetBalance(BaseAccount account);
+
+        /// <summary>
+        /// Busca as contas disponiveis
+        /// </summary>
+        /// <returns>Uma <see cref="List<>"/> com as contas</returns>
+        Task<List<BaseAccount>> GetAccounts();
 
         /// <summary>
         /// Cria uma ordem de compra
