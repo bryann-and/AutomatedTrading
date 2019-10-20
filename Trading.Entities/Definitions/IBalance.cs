@@ -4,6 +4,6 @@ namespace Trading.Entities.Definitions
 {
     public interface IBalance
     {
-        List<ICurrency> Currencies { get; set; }
+        List<BaseCurrency> Currencies { get; set; }
     }
 }

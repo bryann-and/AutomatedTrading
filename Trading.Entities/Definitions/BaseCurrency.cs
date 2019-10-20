@@ -3,15 +3,15 @@
     /// <summary>
     /// Definição do modelo basico de uma Moeda
     /// </summary>
-    public interface ICurrency
+    public class BaseCurrency
     {
         /// <summary>
         /// Simbolo da moeda, por exemplo: "BTC"
         /// </summary>
-        string symbol { get; set; }
+        string Symbol { get; set; }
         /// <summary>
         /// Nome da moeda, por exemplo "Bitcoin"
         /// </summary>
-        string name { get; set; }
+        string Name { get; set; }
     }
 }

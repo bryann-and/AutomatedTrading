@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Trading.Entities.Definitions;
 
 namespace Trading.Operations.Definitions
@@ -9,15 +10,22 @@ namespace Trading.Operations.Definitions
     public interface IExchange
     {
         /// <summary>
-        /// Armazena as informações de Autorização necessarias para realizar todas as transações disponiveis
+        /// Armazena as informações de Autorização necessarias para realizar todas as transações disponiveis que não são publicas
         /// </summary>
         IAuthorization Authorization { get; set; }
 
         /// <summary>
-        /// Busca as informações de valores no Exchange
+        /// Busca as informações de valores de uma moeda especifica no Exchange
         /// </summary>
-        /// <returns>Uma <see cref="List<>"/> de moedas</returns>
-        List<ICurrency> GetTicker();
+        /// <param name="currency">Um objeto <see cref="BaseCurrency"/> com os dados da moeda a ser buscada as informações</param>
+        /// <returns>Um objeto <see cref="BaseCurrency"/> com os dados da moeda</returns>
+        BaseCurrency GetTicker(BaseCurrency currency);
+
+        /// <summary>
+        /// Busca as informações de valores de todas as moedas no Exchange
+        /// </summary>
+        /// <returns>Uma <see cref="Task<List<>>"/> de moedas</returns>
+        Task<List<BaseCurrency>> GetAllTickers();
 
         /// <summary>
         /// Busca todos os assets disponiveis em conta do usuário
