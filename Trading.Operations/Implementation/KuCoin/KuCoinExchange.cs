@@ -11,34 +11,28 @@ using Trading.Operations.Exceptions;
 
 namespace Trading.Operations.Implementation.KuCoin
 {
-    public sealed class KuCoinExchange : BaseExchange, IExchange
+    public sealed class KuCoinExchange : BaseExchange, IExchange<KuCoinAuthorization, KuCoinCurrency, KuCoinBalance, KuCoinAccount>
     {
+        public KuCoinAuthorization Authorization { get; set; }
+
         /// <summary>
         /// Inicializa uma instancia de <see cref="KuCoinExchange"/>, fazendo a injeção de dependencia de HttpClient.
         /// </summary>
         /// <param name="httpClient">Uma instancia de <see cref="HttpClient"/> para ser usada nas requisições</param>
         public KuCoinExchange(HttpClient httpClient) : base(httpClient) { }
 
-        /// <summary>
-        /// Inicializa uma instancia de <see cref="KuCoinExchange"/>, fazendo a injeção de dependencia de HttpClient.
-        /// </summary>
-        /// <param name="httpClient">Uma instancia de <see cref="HttpClient"/> para ser usada nas requisições</param>
-        /// <param name="authorization">Um objeto <see cref="KuCoinAuthorization"/> com as informações de autenticação do usuario</param>
-        public KuCoinExchange(HttpClient httpClient, KuCoinAuthorization authorization) : base(httpClient) 
+        public void SetAuthorization(KuCoinAuthorization authorization)
         {
+            if (string.IsNullOrWhiteSpace(authorization.TimeStamp))
+            {
+                // Buscando o timestamp do servidor
+                Task<string> tarefa = Task.Run(() => GetTimeFromServer());
+                tarefa.Wait();
+                authorization.TimeStamp = tarefa.Result;
+            }
+
             Authorization = authorization;
-
-            #region Buscando o timestamp do servidor
-            Task<string> tarefa = Task.Run(() => GetTimeFromServer(httpClient));
-            tarefa.Wait();
-            Authorization.TimeStamp = tarefa.Result; 
-            #endregion
         }
-
-        /// <summary>
-        /// Armazena as informações de Autorização necessarias para realizar todas as transações disponiveis que não são publicas
-        /// </summary>
-        public KuCoinAuthorization Authorization { get; set; }
 
         /// <summary>
         /// Cancela uma ordem de compra
@@ -65,11 +59,11 @@ namespace Trading.Operations.Implementation.KuCoin
         /// Busca as contas disponiveis
         /// </summary>
         /// <returns>Uma <see cref="List<>"/> com as contas</returns>
-        public async Task<List<BaseAccount>> GetAccounts()
+        public async Task<List<KuCoinAccount>> GetAccounts()
         {
             try
             {
-                if (Authorization is null)
+                if (Authorization is null || !Authorization.isValid())
                 {
                     throw new AuthorizationException("Para essa operação, são necessarias as informações de Authorização do usuario");
                 }
@@ -88,7 +82,7 @@ namespace Trading.Operations.Implementation.KuCoin
 
                     HttpResponseMessage resposta = await HTTPClient.SendAsync(requisicao);
 
-                    return JsonConvert.DeserializeObject<List<KuCoinAccount>>(await resposta.Content.ReadAsStringAsync()).ConvertAll(account => account as BaseAccount);
+                    return JsonConvert.DeserializeObject<List<KuCoinAccount>>(await resposta.Content.ReadAsStringAsync());
                 }                
             }
             catch (Exception ex)
@@ -101,7 +95,7 @@ namespace Trading.Operations.Implementation.KuCoin
         /// Busca as informações de valores de todas as moedas no Exchange
         /// </summary>
         /// <returns>Uma <see cref="Task<List<>>"/> de moedas</returns>
-        public async Task<List<BaseCurrency>> GetAllTickers()
+        public async Task<List<KuCoinCurrency>> GetAllTickers()
         {
             try
             {
@@ -109,7 +103,7 @@ namespace Trading.Operations.Implementation.KuCoin
 
                 JObject json = JObject.Parse(await resposta.Content.ReadAsStringAsync());
 
-                return json.GetValue("data").SelectToken("ticker").ToObject<List<KuCoinCurrency>>().ConvertAll(currency => currency as BaseCurrency);
+                return json.GetValue("data").SelectToken("ticker").ToObject<List<KuCoinCurrency>>();
             }
             catch (Exception ex)
             {
@@ -121,9 +115,9 @@ namespace Trading.Operations.Implementation.KuCoin
         /// Busca todos os assets disponiveis em todas as contas do usuário
         /// </summary>
         /// <returns>
-        /// Um objeto <see cref="BaseBalance" /> com o balanço da conta
+        /// Um objeto <see cref="KuCoinBalance" /> com o balanço da conta
         /// </returns>
-        public BaseBalance GetBalance()
+        public KuCoinBalance GetBalance()
         {
             throw new NotImplementedException("O KuCoin não oferece a possibilidade de buscar o balanço de uma maneira generica, a plataforma sempre pede o ID da conta. O mais proximo de um GetBalance() no KuCoin é o método GetAccounts()");
         }
@@ -133,13 +127,13 @@ namespace Trading.Operations.Implementation.KuCoin
         /// </summary>
         /// <param name="account">A conta que se deseja buscar o balanço</param>
         /// <returns>
-        /// Um objeto <see cref="BaseBalance" /> com o balanço da conta
+        /// Um objeto <see cref="KuCoinAccount" /> com o balanço da conta
         /// </returns>
-        public async Task<BaseBalance> GetBalance(BaseAccount account)
+        public async Task<KuCoinBalance> GetBalance(KuCoinAccount account)
         {
             try
             {
-                if (Authorization is null)
+                if (Authorization is null || !Authorization.isValid())
                 {
                     throw new AuthorizationException("Para essa operação, são necessarias as informações de Authorização do usuario");
                 }
@@ -157,11 +151,11 @@ namespace Trading.Operations.Implementation.KuCoin
         /// <summary>
         /// Busca as informações de valores de uma moeda especifica no Exchange
         /// </summary>
-        /// <param name="currency">Um objeto <see cref="BaseCurrency" /> com os dados da moeda a ser buscada as informações</param>
+        /// <param name="currency">Um objeto <see cref="KuCoinCurrency" /> com os dados da moeda a ser buscada as informações</param>
         /// <returns>
-        /// Um objeto <see cref="BaseCurrency" /> com os dados da moeda
+        /// Um objeto <see cref="KuCoinCurrency" /> com os dados da moeda
         /// </returns>
-        public BaseCurrency GetTicker(BaseCurrency currency)
+        public KuCoinCurrency GetTicker(KuCoinCurrency currency)
         {
             throw new NotImplementedException();
         }
@@ -169,9 +163,8 @@ namespace Trading.Operations.Implementation.KuCoin
         /// <summary>
         /// Busca o tempo na API KuCoin
         /// </summary>
-        /// <param name="cliente">O <see cref="HttpClient"/> a ser utilizado</param>
-        /// <returns></returns>
-        public async Task<string> GetTimeFromServer(HttpClient cliente)
+        /// <returns>Uma string contento o tem po retornado pela API do KuCoin</returns>
+        public async Task<string> GetTimeFromServer()
         {
             try
             {

@@ -14,11 +14,6 @@ namespace Trading.API.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<WeatherForecastController> _logger;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger, IHttpClientFactory cliente)
@@ -29,27 +24,20 @@ namespace Trading.API.Controllers
 
         public async Task Teste(IHttpClientFactory cliente)
         {
-            KuCoinExchange teste = new KuCoinExchange(cliente.CreateClient("kucoin"), new KuCoinAuthorization("5dacaa7c1d70990008a7e8f0", "oloquinhomeu") 
-            { 
-                Secret = "whatever"
+            KuCoinExchange teste = new KuCoinExchange(cliente.CreateClient("kucoin"));
+            teste.SetAuthorization(new KuCoinAuthorization
+            {
+                Key = "",
+                PassPhrase = "",
+                Secret = ""
             });
 
-            List<BaseAccount> t = await teste.GetAccounts();
+
+            List<KuCoinCurrency> pairs = await teste.GetAllTickers();
+
+            List<KuCoinAccount> t = await teste.GetAccounts();
 
             string g = "";
-        }
-
-        [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
-        {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
         }
     }
 }
