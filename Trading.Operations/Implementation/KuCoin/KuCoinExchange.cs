@@ -160,6 +160,20 @@ namespace Trading.Operations.Implementation.KuCoin
             throw new NotImplementedException();
         }
 
+        public async Task GetFiatPrice()
+        {
+            try
+            {
+                HttpResponseMessage resposta = await HTTPClient.GetAsync("/api/v1/prices");
+                string teste = await resposta.Content.ReadAsStringAsync();
+                teste = "q";
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         /// <summary>
         /// Busca o tempo na API KuCoin
         /// </summary>

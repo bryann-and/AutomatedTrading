@@ -10,6 +10,12 @@
         /// </summary>
         string Key { get; set; }
 
+        string Secret { get; set; }
+
+        string PassPhrase { get; set; }
+
+        string TimeStamp { get; set; }
+
         /// <summary>
         /// Verifica se a autorização esta corretamente preenchida
         /// </summary>

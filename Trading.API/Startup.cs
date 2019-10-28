@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -30,6 +31,11 @@ namespace Trading.API
             services.AddHttpClient("kucoin", c =>
             {
                 c.BaseAddress = new Uri("https://api.kucoin.com");
+            });
+            services.AddHttpClient("coinbase", c =>
+            {
+                c.BaseAddress = new Uri("https://api-public.sandbox.pro.coinbase.com");
+                c.DefaultRequestHeaders.UserAgent.ParseAdd("C# Implementation");
             });
         }
 

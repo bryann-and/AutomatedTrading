@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Trading.Entities.Definitions;
+using Trading.Operations.Implementation.CoinBasePro;
 using Trading.Operations.Implementation.KuCoin;
 
 namespace Trading.API.Controllers
@@ -24,20 +25,14 @@ namespace Trading.API.Controllers
 
         public async Task Teste(IHttpClientFactory cliente)
         {
-            KuCoinExchange teste = new KuCoinExchange(cliente.CreateClient("kucoin"));
-            teste.SetAuthorization(new KuCoinAuthorization
+            CoinBaseExchange coinBase = new CoinBaseExchange(cliente.CreateClient("coinbase"));
+
+            List<CoinBaseProduct> oloko = await coinBase.GetAllTickers();
+
+            if (oloko.Count >= 0)
             {
-                Key = "",
-                PassPhrase = "",
-                Secret = ""
-            });
 
-
-            List<KuCoinCurrency> pairs = await teste.GetAllTickers();
-
-            List<KuCoinAccount> t = await teste.GetAccounts();
-
-            string g = "";
+            }
         }
     }
 }
