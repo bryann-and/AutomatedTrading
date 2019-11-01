@@ -11,7 +11,7 @@ using Trading.Operations.Exceptions;
 
 namespace Trading.Operations.Implementation.KuCoin
 {
-    public sealed class KuCoinExchange : BaseExchange, IExchange<KuCoinAuthorization, KuCoinCurrency, KuCoinBalance, KuCoinAccount>
+    public sealed class KuCoinExchange : BaseExchange, IExchange<KuCoinAuthorization, KuCoinCurrency, KuCoinBalance, KuCoinAccount, KuCoinCurrency>
     {
         public KuCoinAuthorization Authorization { get; set; }
 
@@ -155,7 +155,7 @@ namespace Trading.Operations.Implementation.KuCoin
         /// <returns>
         /// Um objeto <see cref="KuCoinCurrency" /> com os dados da moeda
         /// </returns>
-        public KuCoinCurrency GetTicker(KuCoinCurrency currency)
+        public Task<KuCoinCurrency> GetTicker(KuCoinCurrency currency)
         {
             throw new NotImplementedException();
         }

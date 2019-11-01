@@ -29,7 +29,7 @@ namespace Trading.Operations.Implementation.CoinBasePro
         {
             string sign = TimeStamp + method.ToUpper() + url + ((body == null) ? "" : JsonConvert.SerializeObject(body));
 
-            using (HMACSHA256 sha = new HMACSHA256(Encoding.UTF8.GetBytes(Convert.ToBase64String(Encoding.UTF8.GetBytes(Secret)))))
+            using (HMACSHA256 sha = new HMACSHA256(Convert.FromBase64String(Secret)))
             {
                 return Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(sign)));
             }

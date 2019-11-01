@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +38,10 @@ namespace Trading.API
                 c.BaseAddress = new Uri("https://api-public.sandbox.pro.coinbase.com");
                 c.DefaultRequestHeaders.UserAgent.ParseAdd("C# Implementation");
             });
+            services.AddApplicationInsightsTelemetry(options =>
+            {
+                options.EnableDebugLogger = false;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +50,7 @@ namespace Trading.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                TelemetryDebugWriter.IsTracingDisabled = true;
             }
 
             app.UseRouting();

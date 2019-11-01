@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using Trading.Entities.Definitions;
+﻿using System.Net.Http;
 
 namespace Trading.Operations.Definitions
 {
