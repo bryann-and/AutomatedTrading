@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Trading.Entities.Definitions;
 using Trading.Operations.Definitions;
@@ -11,20 +12,45 @@ using Trading.Operations.Exceptions;
 namespace Trading.Operations.Implementation.CoinBasePro
 {
     public sealed class CoinBaseExchange : BaseExchange, 
-        IExchange<CoinBaseAuthorization, CoinBaseProduct, CoinBaseBalance, CoinBaseAccount, CoinBaseTicker>
+        IExchange<CoinBaseAuthorization, CoinBaseProduct, CoinBaseBalance, CoinBaseAccount, CoinBaseTicker, CoinBaseOrder>
     {
         public CoinBaseExchange(HttpClient httpClient) : base(httpClient) { }
 
         public CoinBaseAuthorization Authorization { get; set; }
 
-        public bool CancelOrder(IOrder order)
+        public bool CancelOrder(CoinBaseOrder order)
         {
             throw new NotImplementedException();
         }
 
-        public IOrder CreateOrder()
+        public async Task<CoinBaseOrder> CreateOrder(CoinBaseOrder order)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string json = JsonConvert.SerializeObject(order, Formatting.None, new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+
+                using (HttpRequestMessage requisicao = GetRequest(HttpMethod.Post, "/orders", json))
+                {
+                    HttpResponseMessage resposta = await HTTPClient.SendAsync(requisicao);
+                    string resultado = await resposta.Content.ReadAsStringAsync();
+
+                    if (resposta.IsSuccessStatusCode)
+                    {
+                        return JsonConvert.DeserializeObject<CoinBaseOrder>(resultado);
+                    }
+                    else
+                    {
+                        throw new Exception(resultado);
+                    }
+                }                
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<List<CoinBaseProduct>> GetAllProducts()
@@ -50,9 +76,28 @@ namespace Trading.Operations.Implementation.CoinBasePro
             }
         }
 
-        public CoinBaseBalance GetBalance()
+        public async Task<CoinBaseBalance> GetBalance(CoinBaseAccount account)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using HttpRequestMessage requisicao = GetRequest(HttpMethod.Get, "/accounts/" + account.Id);
+                HttpResponseMessage resposta = await HTTPClient.SendAsync(requisicao);
+
+                string resultado = await resposta.Content.ReadAsStringAsync();
+
+                if (resposta.IsSuccessStatusCode)
+                {
+                    return JsonConvert.DeserializeObject<CoinBaseBalance>(resultado);
+                }
+                else
+                {
+                    throw new Exception(resultado);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<CoinBaseTicker> GetTicker(CoinBaseProduct currency)
@@ -83,32 +128,35 @@ namespace Trading.Operations.Implementation.CoinBasePro
         public void SetAuthorization(CoinBaseAuthorization authorization)
         {
             Authorization = authorization;
-            Authorization.TimeStamp = GetTimeFromServer();
+            Authorization.TimeStamp = Task.Run(() => GetTimeFromServer()).GetAwaiter().GetResult();
         }
 
-        private HttpRequestMessage GetHeaders(HttpMethod method, string url, string body = null)
+        private HttpRequestMessage GetRequest(HttpMethod method, string url, string jsonBody = null)
         {
-            using (HttpRequestMessage requisicao = new HttpRequestMessage(method, HTTPClient.BaseAddress + url))
+            if (!Authorization.isValid())
             {
-                requisicao.Headers.Add("CB-ACCESS-KEY", Authorization.Key);
-                requisicao.Headers.Add("CB-ACCESS-SIGN", Authorization.GetSign(url, method.Method, body));
-                requisicao.Headers.Add("CB-ACCESS-TIMESTAMP", Authorization.TimeStamp);
-                requisicao.Headers.Add("CB-ACCESS-PASSPHRASE", Authorization.PassPhrase);
-
-                return requisicao;
+                throw new AuthorizationException("Para essa operação, são necessarias as informações de Authorização do usuario");
             }
+
+            HttpRequestMessage requisicao = new HttpRequestMessage(method, HTTPClient.BaseAddress + url);
+            requisicao.Headers.Add("CB-ACCESS-KEY", Authorization.Key);
+            requisicao.Headers.Add("CB-ACCESS-SIGN", Authorization.GetSign(url, method, jsonBody));
+            requisicao.Headers.Add("CB-ACCESS-TIMESTAMP", Authorization.TimeStamp);
+            requisicao.Headers.Add("CB-ACCESS-PASSPHRASE", Authorization.PassPhrase);
+
+            if (!string.IsNullOrWhiteSpace(jsonBody))
+            {
+                requisicao.Content = new StringContent(jsonBody, Encoding.UTF8);
+            }
+
+            return requisicao;
         }
 
         public async Task<List<CoinBaseAccount>> GetAccounts()
         {
             try
             {
-                if (!Authorization.isValid())
-                {
-                    throw new AuthorizationException("Para essa operação, são necessarias as informações de Authorização do usuario");
-                }
-
-                using HttpRequestMessage requisicao = GetHeaders(HttpMethod.Get, "/accounts");
+                using HttpRequestMessage requisicao = GetRequest(HttpMethod.Get, "/accounts");
                 HttpResponseMessage resposta = await HTTPClient.SendAsync(requisicao);
 
                 string Conteudo = await resposta.Content.ReadAsStringAsync();
@@ -128,23 +176,20 @@ namespace Trading.Operations.Implementation.CoinBasePro
             }
         }
 
-        private string GetTimeFromServer()
+        private async Task<string> GetTimeFromServer()
         {
             try
             {
-                Task<HttpResponseMessage> tarefaRequisicao = Task.Run(() => HTTPClient.GetAsync("/time"));
-                tarefaRequisicao.Wait();
+                HttpResponseMessage requisicao = await HTTPClient.GetAsync("/time");
+                string conteudo = await requisicao.Content.ReadAsStringAsync();
 
-                Task<string> tarefaLeitura = Task.Run(() => tarefaRequisicao.Result.Content.ReadAsStringAsync());
-                tarefaLeitura.Wait();
-
-                if (tarefaRequisicao.Result.IsSuccessStatusCode)
+                if (requisicao.IsSuccessStatusCode)
                 {
-                    return JObject.Parse(tarefaLeitura.Result).GetValue("epoch").ToObject<string>();
+                    return JObject.Parse(conteudo).GetValue("epoch").ToObject<string>();
                 }
                 else
                 {
-                    throw new Exception(tarefaLeitura.Result);
+                    throw new Exception(conteudo);
                 }                
             }
             catch (Exception ex)

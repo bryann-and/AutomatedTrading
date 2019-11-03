@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using Trading.Entities.Definitions;
@@ -25,9 +25,9 @@ namespace Trading.Operations.Implementation.CoinBasePro
             return !string.IsNullOrWhiteSpace(Key) && !string.IsNullOrWhiteSpace(Secret) && !string.IsNullOrWhiteSpace(PassPhrase) && !string.IsNullOrWhiteSpace(TimeStamp);
         }
 
-        internal string GetSign(string url, string method, string body)
+        internal string GetSign(string url, HttpMethod method, string body)
         {
-            string sign = TimeStamp + method.ToUpper() + url + ((body == null) ? "" : JsonConvert.SerializeObject(body));
+            string sign = TimeStamp + method.Method.ToUpper() + url +  body;
 
             using (HMACSHA256 sha = new HMACSHA256(Convert.FromBase64String(Secret)))
             {

@@ -37,7 +37,30 @@ namespace Trading.API.Controllers
                     Key = "0dcc6b92f4b00953ab696b5b2695032a"
                 });
 
-                List<CoinBaseAccount> contas = await coinBase.GetAccounts();
+                //List<CoinBaseAccount> contas = await coinBase.GetAccounts();
+
+                //List<CoinBaseBalance> balanco = new List<CoinBaseBalance>();
+
+                //foreach (CoinBaseAccount conta in contas)
+                //{
+                //    balanco.Add(await coinBase.GetBalance(conta));
+                //}
+
+                //foreach (CoinBaseAccount conta in contas)
+                //{
+                //    Debug.WriteLine("Id: " + conta.Id + "|Profile Id: " + conta.Profile_id + "|Currency: " + conta.Currency + "|Av: " + conta.Available);
+                //}
+
+                CoinBaseOrder ordem = new CoinBaseOrder
+                {
+                    Tipo = OrderType.Market,
+                    Lado = OrderSide.Sell,
+                    Product_id = "BTC-USD",
+                    Funds = 0.01058207m
+                };
+
+                ordem = await coinBase.CreateOrder(ordem);
+
 
                 while (true)
                 {

@@ -7,7 +7,7 @@ namespace Trading.Operations.Definitions
     /// <summary>
     /// Definição das propriedades e metodos basicos de operações fornecidas pelos Exchanges
     /// </summary>
-    public interface IExchange<AuthorizationType, CurrencyType, BalanceType, AccountType, TickerType>
+    public interface IExchange<AuthorizationType, CurrencyType, BalanceType, AccountType, TickerType, OrderType>
     {
         AuthorizationType Authorization { get; set; }
 
@@ -21,8 +21,9 @@ namespace Trading.Operations.Definitions
         /// <summary>
         /// Busca todos os assets disponiveis em todas as contas do usuário
         /// </summary>
+        /// <param name="account">Um objeto <see cref="AccountType"/> com a conta a ser buscada o balanço</param>
         /// <returns>Um objeto <see cref="BalanceType"/> com o balanço da conta</returns>
-        BalanceType GetBalance();
+        Task<BalanceType> GetBalance(AccountType account);
 
         /// <summary>
         /// Busca as contas disponiveis
@@ -33,14 +34,15 @@ namespace Trading.Operations.Definitions
         /// <summary>
         /// Cria uma ordem de compra
         /// </summary>
-        /// <returns>Um objeto <see cref="IOrder"/> com o id da ordem</returns>
-        IOrder CreateOrder();
+        /// <param name="order">Ordem a ser criada</param>
+        /// <returns>Um objeto <see cref="OrderType"/> com o id da ordem</returns>
+        Task<OrderType> CreateOrder(OrderType order);
 
         /// <summary>
         /// Cancela uma ordem de compra
         /// </summary>
         /// <param name="order">Ordem a ser cancelada</param>
         /// <returns>Um <see cref="bool"/> dizendo se a ordem foi cancelada ou não</returns>
-        bool CancelOrder(IOrder order);
+        bool CancelOrder(OrderType order);
     }
 }

@@ -11,7 +11,7 @@ using Trading.Operations.Exceptions;
 
 namespace Trading.Operations.Implementation.KuCoin
 {
-    public sealed class KuCoinExchange : BaseExchange, IExchange<KuCoinAuthorization, KuCoinCurrency, KuCoinBalance, KuCoinAccount, KuCoinCurrency>
+    public sealed class KuCoinExchange : BaseExchange/*, IExchange<KuCoinAuthorization, KuCoinCurrency, KuCoinBalance, KuCoinAccount, KuCoinCurrency>*/
     {
         public KuCoinAuthorization Authorization { get; set; }
 
@@ -39,7 +39,7 @@ namespace Trading.Operations.Implementation.KuCoin
         /// </summary>
         /// <param name="order">Ordem a ser cancelada</param>
         /// <returns>Um <see cref="bool"/> dizendo se a ordem foi cancelada ou não</returns>
-        public bool CancelOrder(IOrder order)
+        public bool CancelOrder(BaseOrder order)
         {
             throw new NotImplementedException();
         }
@@ -48,9 +48,9 @@ namespace Trading.Operations.Implementation.KuCoin
         /// Cria uma ordem de compra
         /// </summary>
         /// <returns>
-        /// Um objeto <see cref="IOrder" /> com o id da ordem
+        /// Um objeto <see cref="BaseOrder" /> com o id da ordem
         /// </returns>
-        public IOrder CreateOrder()
+        public BaseOrder CreateOrder()
         {
             throw new NotImplementedException();
         }
