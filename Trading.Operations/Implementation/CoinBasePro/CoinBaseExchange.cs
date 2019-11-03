@@ -5,18 +5,15 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Trading.Entities.Definitions;
 using Trading.Operations.Definitions;
 using Trading.Operations.Exceptions;
 
 namespace Trading.Operations.Implementation.CoinBasePro
 {
-    public sealed class CoinBaseExchange : BaseExchange, 
+    public sealed class CoinBaseExchange : BaseExchange<CoinBaseAuthorization>, 
         IExchange<CoinBaseAuthorization, CoinBaseProduct, CoinBaseBalance, CoinBaseAccount, CoinBaseTicker, CoinBaseOrder>
     {
         public CoinBaseExchange(HttpClient httpClient) : base(httpClient) { }
-
-        public CoinBaseAuthorization Authorization { get; set; }
 
         public bool CancelOrder(CoinBaseOrder order)
         {
@@ -27,12 +24,7 @@ namespace Trading.Operations.Implementation.CoinBasePro
         {
             try
             {
-                string json = JsonConvert.SerializeObject(order, Formatting.None, new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore
-                });
-
-                using (HttpRequestMessage requisicao = GetRequest(HttpMethod.Post, "/orders", json))
+                using (HttpRequestMessage requisicao = GetRequest(HttpMethod.Post, "/orders", order.ToJson()))
                 {
                     HttpResponseMessage resposta = await HTTPClient.SendAsync(requisicao);
                     string resultado = await resposta.Content.ReadAsStringAsync();
@@ -46,29 +38,6 @@ namespace Trading.Operations.Implementation.CoinBasePro
                         throw new Exception(resultado);
                     }
                 }                
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public async Task<List<CoinBaseProduct>> GetAllProducts()
-        {
-            try
-            {
-                HttpResponseMessage resposta = await HTTPClient.GetAsync("/products");
-                string Conteudo = await resposta.Content.ReadAsStringAsync();
-
-                if (resposta.IsSuccessStatusCode)
-                {
-                    return JsonConvert.DeserializeObject<List<CoinBaseProduct>>(Conteudo);
-                }
-                else
-                {
-                    throw new Exception(Conteudo);
-                }
-
             }
             catch (Exception ex)
             {
@@ -122,35 +91,40 @@ namespace Trading.Operations.Implementation.CoinBasePro
             }
         }
 
+        public async Task<List<CoinBaseProduct>> GetAllProducts()
+        {
+            try
+            {
+                HttpResponseMessage resposta = await HTTPClient.GetAsync("/products");
+                string Conteudo = await resposta.Content.ReadAsStringAsync();
+
+                if (resposta.IsSuccessStatusCode)
+                {
+                    return JsonConvert.DeserializeObject<List<CoinBaseProduct>>(Conteudo);
+                }
+                else
+                {
+                    throw new Exception(Conteudo);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         /// <summary>
-        /// Seta a autorização ja buscando o TImeStamp automaticamente
+        /// Seta a autorização ja buscando o TimeStamp automaticamente
         /// </summary>
+        /// <param name="authorization">Um objeto do tipo <see cref="CoinBaseAuthorization" /> com as informações</param>
         public void SetAuthorization(CoinBaseAuthorization authorization)
         {
             Authorization = authorization;
             Authorization.TimeStamp = Task.Run(() => GetTimeFromServer()).GetAwaiter().GetResult();
         }
 
-        private HttpRequestMessage GetRequest(HttpMethod method, string url, string jsonBody = null)
-        {
-            if (!Authorization.isValid())
-            {
-                throw new AuthorizationException("Para essa operação, são necessarias as informações de Authorização do usuario");
-            }
-
-            HttpRequestMessage requisicao = new HttpRequestMessage(method, HTTPClient.BaseAddress + url);
-            requisicao.Headers.Add("CB-ACCESS-KEY", Authorization.Key);
-            requisicao.Headers.Add("CB-ACCESS-SIGN", Authorization.GetSign(url, method, jsonBody));
-            requisicao.Headers.Add("CB-ACCESS-TIMESTAMP", Authorization.TimeStamp);
-            requisicao.Headers.Add("CB-ACCESS-PASSPHRASE", Authorization.PassPhrase);
-
-            if (!string.IsNullOrWhiteSpace(jsonBody))
-            {
-                requisicao.Content = new StringContent(jsonBody, Encoding.UTF8);
-            }
-
-            return requisicao;
-        }
+        
 
         public async Task<List<CoinBaseAccount>> GetAccounts()
         {
@@ -174,6 +148,27 @@ namespace Trading.Operations.Implementation.CoinBasePro
             {
                 throw;
             }
+        }
+
+        private HttpRequestMessage GetRequest(HttpMethod method, string url, string jsonBody = null)
+        {
+            if (!Authorization.isValid())
+            {
+                throw new AuthorizationException("Para essa operação, são necessarias as informações de Authorização do usuario");
+            }
+
+            HttpRequestMessage requisicao = new HttpRequestMessage(method, HTTPClient.BaseAddress + url);
+            requisicao.Headers.Add("CB-ACCESS-KEY", Authorization.Key);
+            requisicao.Headers.Add("CB-ACCESS-SIGN", Authorization.GetSign(url, method, jsonBody));
+            requisicao.Headers.Add("CB-ACCESS-TIMESTAMP", Authorization.TimeStamp);
+            requisicao.Headers.Add("CB-ACCESS-PASSPHRASE", Authorization.PassPhrase);
+
+            if (!string.IsNullOrWhiteSpace(jsonBody))
+            {
+                requisicao.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+            }
+
+            return requisicao;
         }
 
         private async Task<string> GetTimeFromServer()

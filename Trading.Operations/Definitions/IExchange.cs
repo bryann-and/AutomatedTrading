@@ -9,8 +9,6 @@ namespace Trading.Operations.Definitions
     /// </summary>
     public interface IExchange<AuthorizationType, CurrencyType, BalanceType, AccountType, TickerType, OrderType>
     {
-        AuthorizationType Authorization { get; set; }
-
         /// <summary>
         /// Busca as informações de valores de uma moeda especifica no Exchange
         /// </summary>
@@ -44,5 +42,12 @@ namespace Trading.Operations.Definitions
         /// <param name="order">Ordem a ser cancelada</param>
         /// <returns>Um <see cref="bool"/> dizendo se a ordem foi cancelada ou não</returns>
         bool CancelOrder(OrderType order);
+
+
+        /// <summary>
+        /// Seta a autorização com as informações do usuario no Exchange
+        /// </summary>
+        /// <param name="authorization">Um objeto do tipo <see cref="AuthorizationType"/> com as informações</param>
+        void SetAuthorization(AuthorizationType authorization);
     }
 }

@@ -1,11 +1,14 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System;
 using Trading.Entities.Definitions;
 
 namespace Trading.Operations.Implementation.CoinBasePro
 {
     public sealed class CoinBaseOrder : BaseOrder
     {
-        public string Product_id { get; set; }
+        [JsonProperty("product_id")]
+        public string ProductId { get; set; }
         public decimal? Price { get; set; }
         public string Side
         {
@@ -69,12 +72,38 @@ namespace Trading.Operations.Implementation.CoinBasePro
         public decimal? Funds { get; set; }
 
         public string Stp { get; set; }
-        public string Time_in_force { get; set; }
-        public bool? Post_only { get; set; }
-        public DateTime? Created_at { get; set; }
-        public decimal? Fill_fees { get; set; }
-        public decimal? Filled_size { get; set; }
-        public decimal? Executed_value { get; set; }
+
+        [JsonProperty("time_in_force")]
+        public string TimeInForce { get; set; }
+
+        [JsonProperty("post_only")]
+        public bool? PostOnly { get; set; }
+
+        [JsonProperty("created_at")]
+        public DateTime? CreatedAt { get; set; }
+
+        [JsonProperty("fill_fees")]
+        public decimal? FillFees { get; set; }
+
+        [JsonProperty("filled_size")]
+        public decimal? FilledSize { get; set; }
+
+        [JsonProperty("executed_value")]
+        public decimal? ExecutedValue { get; set; }
+
         public bool? Settled { get; set; }
+
+        /// <summary>
+        /// Retorna o objeto no formato de Json
+        /// </summary>
+        /// <returns>O Json do objeto</returns>
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.None, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+        }
     }
 }

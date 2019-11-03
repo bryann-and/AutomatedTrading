@@ -48,7 +48,7 @@ namespace Trading.Operations.Implementation.KuCoin
         /// Cria uma ordem de compra
         /// </summary>
         /// <returns>
-        /// Um objeto <see cref="BaseOrder" /> com o id da ordem
+        /// Um objeto <see cref="IOrder" /> com o id da ordem
         /// </returns>
         public BaseOrder CreateOrder()
         {

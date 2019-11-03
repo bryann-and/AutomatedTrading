@@ -51,12 +51,16 @@ namespace Trading.API.Controllers
                 //    Debug.WriteLine("Id: " + conta.Id + "|Profile Id: " + conta.Profile_id + "|Currency: " + conta.Currency + "|Av: " + conta.Available);
                 //}
 
+                List<CoinBaseProduct> products = await coinBase.GetAllProducts();
+
+                products.ForEach(p => Debug.WriteLine("Id: " + p.Id));
+
                 CoinBaseOrder ordem = new CoinBaseOrder
                 {
                     Tipo = OrderType.Market,
                     Lado = OrderSide.Sell,
-                    Product_id = "BTC-USD",
-                    Funds = 0.01058207m
+                    ProductId = "BTC-USD",
+                    Size = 0.01058207m
                 };
 
                 ordem = await coinBase.CreateOrder(ordem);
