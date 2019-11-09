@@ -17,7 +17,27 @@ namespace Trading.Operations.Implementation.CoinBasePro
 
         public bool CancelOrder(CoinBaseOrder order)
         {
-            throw new NotImplementedException();
+            // TODO: testar essa função, pq na documentação não exite exemplo da resposta retornada
+            try
+            {
+                using (HttpRequestMessage requisicao = GetRequest(HttpMethod.Delete, "/orders/" + order.Id))
+                {
+                    HttpResponseMessage resposta = Task.Run(() => HTTPClient.SendAsync(requisicao)).GetAwaiter().GetResult();
+
+                    if (resposta.IsSuccessStatusCode)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        throw new Exception(Task.Run(() => resposta.Content.ReadAsStringAsync()).GetAwaiter().GetResult());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<CoinBaseOrder> CreateOrder(CoinBaseOrder order)
@@ -38,6 +58,31 @@ namespace Trading.Operations.Implementation.CoinBasePro
                         throw new Exception(resultado);
                     }
                 }                
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public CoinBaseOrder GetOrder(CoinBaseOrder order)
+        {
+            try
+            {
+                using (HttpRequestMessage requisicao = GetRequest(HttpMethod.Get, "/orders/" + order.Id))
+                {
+                    HttpResponseMessage resposta = Task.Run(() => HTTPClient.SendAsync(requisicao)).GetAwaiter().GetResult();
+                    string resultado = Task.Run(() => resposta.Content.ReadAsStringAsync()).GetAwaiter().GetResult();
+
+                    if (resposta.IsSuccessStatusCode)
+                    {
+                        return JsonConvert.DeserializeObject<CoinBaseOrder>(resultado);
+                    }
+                    else
+                    {
+                        throw new Exception(resultado);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -124,8 +169,6 @@ namespace Trading.Operations.Implementation.CoinBasePro
             Authorization.TimeStamp = Task.Run(() => GetTimeFromServer()).GetAwaiter().GetResult();
         }
 
-        
-
         public async Task<List<CoinBaseAccount>> GetAccounts()
         {
             try
@@ -149,6 +192,7 @@ namespace Trading.Operations.Implementation.CoinBasePro
                 throw;
             }
         }
+
 
         private HttpRequestMessage GetRequest(HttpMethod method, string url, string jsonBody = null)
         {

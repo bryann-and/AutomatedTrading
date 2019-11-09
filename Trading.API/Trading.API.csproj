@@ -9,9 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Trading.Automation\Trading.Automation.csproj" />
-    <ProjectReference Include="..\Trading.Entities\Trading.Entities.csproj" />
-    <ProjectReference Include="..\Trading.Operations\Trading.Operations.csproj" />
+    <ProjectReference Include="..\Trading\Trading.csproj" />
   </ItemGroup>
 
   <ItemGroup>

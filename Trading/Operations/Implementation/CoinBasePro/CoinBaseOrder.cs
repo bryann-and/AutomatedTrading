@@ -7,6 +7,9 @@ namespace Trading.Operations.Implementation.CoinBasePro
 {
     public sealed class CoinBaseOrder : BaseOrder
     {
+        public string Id { get; set; }
+        public string Status { get; set; }
+
         [JsonProperty("product_id")]
         public string ProductId { get; set; }
         public decimal? Price { get; set; }

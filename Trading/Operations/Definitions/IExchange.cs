@@ -30,11 +30,18 @@ namespace Trading.Operations.Definitions
         Task<List<AccountType>> GetAccounts();
 
         /// <summary>
-        /// Cria uma ordem de compra
+        /// Cria uma ordem
         /// </summary>
         /// <param name="order">Ordem a ser criada</param>
-        /// <returns>Um objeto <see cref="OrderType"/> com o id da ordem</returns>
+        /// <returns>Um objeto <see cref="OrderType"/> com as informações da ordem</returns>
         Task<OrderType> CreateOrder(OrderType order);
+
+        /// <summary>
+        /// Busca as informações atualizadas de uma ordem
+        /// </summary>
+        /// <param name="order">Um objeto <see cref="OrderType"/> a ter as informações buscadas</param>
+        /// <returns>Um objeto <see cref="OrderType"/> com informações atualizadas</returns>
+        OrderType GetOrder(OrderType order);
 
         /// <summary>
         /// Cancela uma ordem de compra

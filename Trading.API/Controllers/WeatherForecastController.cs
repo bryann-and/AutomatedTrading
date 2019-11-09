@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Trading.Entities.Definitions;
 using Trading.Operations.Implementation.CoinBasePro;
-using Trading.Operations.Implementation.KuCoin;
 using System.Diagnostics;
 
 namespace Trading.API.Controllers
