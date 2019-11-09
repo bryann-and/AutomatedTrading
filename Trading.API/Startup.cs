@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Trading.API.Controllers;
+using Trading.Operations.ExchangeEndpoints;
 
 namespace Trading.API
 {
@@ -28,16 +29,21 @@ namespace Trading.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddHttpClient("kucoin", c =>
-            {
-                c.BaseAddress = new Uri("https://api.kucoin.com");
-            });
+            services.AddOptions();
+
+            #region Carregando os EndPoints
+            services.Configure<CoinBaseProEndpoints>(Configuration.GetSection("CoinBaseProEndpoints"));
+            #endregion
+
+            #region Criando os HTTPClients
             services.AddHttpClient("coinbase", c =>
             {
                 c.BaseAddress = new Uri("https://api-public.sandbox.pro.coinbase.com");
                 c.DefaultRequestHeaders.UserAgent.ParseAdd("C# Implementation");
-            });
+            }); 
+            #endregion
+
+            services.AddControllers();
             services.AddApplicationInsightsTelemetry(options =>
             {
                 options.EnableDebugLogger = false;

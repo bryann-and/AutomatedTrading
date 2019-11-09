@@ -9,6 +9,9 @@ using Microsoft.Extensions.Logging;
 using Trading.Entities.Definitions;
 using Trading.Operations.Implementation.CoinBasePro;
 using System.Diagnostics;
+using Microsoft.Extensions.Configuration;
+using Trading.Operations.ExchangeEndpoints;
+using Microsoft.Extensions.Options;
 
 namespace Trading.API.Controllers
 {
@@ -18,9 +21,13 @@ namespace Trading.API.Controllers
     {
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IHttpClientFactory cliente)
+        private CoinBaseProEndpoints EndPoints {get;set;}
+
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IHttpClientFactory cliente, IOptions<CoinBaseProEndpoints> endpoints)
         {
             _logger = logger;
+            EndPoints = endpoints.Value;
+
             Teste(cliente);
         }
 
@@ -28,7 +35,7 @@ namespace Trading.API.Controllers
         {
             try
             {
-                CoinBaseExchange coinBase = new CoinBaseExchange(cliente.CreateClient("coinbase"));
+                CoinBaseExchange coinBase = new CoinBaseExchange(cliente.CreateClient("coinbase"), EndPoints);
                 coinBase.SetAuthorization(new CoinBaseAuthorization
                 {
                     Secret = "Y03CqYaz7etJ7jXenTB3duzskYgjrpleaAB9DAM+y4cmqK8VhsUKazZM3g6/5rR0ZmDVjRvYa/Xsd/XNtaE+lw==",
@@ -54,15 +61,15 @@ namespace Trading.API.Controllers
 
                 products.ForEach(p => Debug.WriteLine("Id: " + p.Id));
 
-                CoinBaseOrder ordem = new CoinBaseOrder
-                {
-                    Tipo = OrderType.Market,
-                    Lado = OrderSide.Sell,
-                    ProductId = "BTC-USD",
-                    Size = 0.01058207m
-                };
+                //CoinBaseOrder ordem = new CoinBaseOrder
+                //{
+                //    Tipo = OrderType.Market,
+                //    Lado = OrderSide.Sell,
+                //    ProductId = "BTC-USD",
+                //    Size = 0.01058207m
+                //};
 
-                ordem = await coinBase.CreateOrder(ordem);
+                //ordem = await coinBase.CreateOrder(ordem);
 
 
                 while (true)

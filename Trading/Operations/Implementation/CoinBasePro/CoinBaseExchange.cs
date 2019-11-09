@@ -6,21 +6,22 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Trading.Operations.Definitions;
+using Trading.Operations.ExchangeEndpoints;
 using Trading.Operations.Exceptions;
 
 namespace Trading.Operations.Implementation.CoinBasePro
 {
-    public sealed class CoinBaseExchange : BaseExchange<CoinBaseAuthorization>, 
+    public sealed class CoinBaseExchange : BaseExchange<CoinBaseAuthorization, CoinBaseProEndpoints>, 
         IExchange<CoinBaseAuthorization, CoinBaseProduct, CoinBaseBalance, CoinBaseAccount, CoinBaseTicker, CoinBaseOrder>
     {
-        public CoinBaseExchange(HttpClient httpClient) : base(httpClient) { }
+        public CoinBaseExchange(HttpClient httpClient, CoinBaseProEndpoints endpoints) : base(httpClient, endpoints) { }
 
         public bool CancelOrder(CoinBaseOrder order)
         {
             // TODO: testar essa função, pq na documentação não exite exemplo da resposta retornada
             try
             {
-                using (HttpRequestMessage requisicao = GetRequest(HttpMethod.Delete, "/orders/" + order.Id))
+                using (HttpRequestMessage requisicao = GetRequest(HttpMethod.Delete, EndPoints.GetEndpointOrderId(order)))
                 {
                     HttpResponseMessage resposta = Task.Run(() => HTTPClient.SendAsync(requisicao)).GetAwaiter().GetResult();
 
@@ -44,7 +45,7 @@ namespace Trading.Operations.Implementation.CoinBasePro
         {
             try
             {
-                using (HttpRequestMessage requisicao = GetRequest(HttpMethod.Post, "/orders", order.ToJson()))
+                using (HttpRequestMessage requisicao = GetRequest(HttpMethod.Post, EndPoints.Orders, order.ToJson()))
                 {
                     HttpResponseMessage resposta = await HTTPClient.SendAsync(requisicao);
                     string resultado = await resposta.Content.ReadAsStringAsync();
@@ -69,7 +70,7 @@ namespace Trading.Operations.Implementation.CoinBasePro
         {
             try
             {
-                using (HttpRequestMessage requisicao = GetRequest(HttpMethod.Get, "/orders/" + order.Id))
+                using (HttpRequestMessage requisicao = GetRequest(HttpMethod.Get, EndPoints.GetEndpointOrderId(order)))
                 {
                     HttpResponseMessage resposta = Task.Run(() => HTTPClient.SendAsync(requisicao)).GetAwaiter().GetResult();
                     string resultado = Task.Run(() => resposta.Content.ReadAsStringAsync()).GetAwaiter().GetResult();
@@ -94,7 +95,7 @@ namespace Trading.Operations.Implementation.CoinBasePro
         {
             try
             {
-                using HttpRequestMessage requisicao = GetRequest(HttpMethod.Get, "/accounts/" + account.Id);
+                using HttpRequestMessage requisicao = GetRequest(HttpMethod.Get, EndPoints.GetEndpointAccountId(account));
                 HttpResponseMessage resposta = await HTTPClient.SendAsync(requisicao);
 
                 string resultado = await resposta.Content.ReadAsStringAsync();
@@ -118,7 +119,7 @@ namespace Trading.Operations.Implementation.CoinBasePro
         {
             try
             {
-                HttpResponseMessage resposta = await HTTPClient.GetAsync("/products/" + currency.Id + "/ticker");
+                HttpResponseMessage resposta = await HTTPClient.GetAsync(EndPoints.GetEndpointProductTicker(currency));
                 string Conteudo = await resposta.Content.ReadAsStringAsync();
 
                 if (resposta.IsSuccessStatusCode)
@@ -140,7 +141,7 @@ namespace Trading.Operations.Implementation.CoinBasePro
         {
             try
             {
-                HttpResponseMessage resposta = await HTTPClient.GetAsync("/products");
+                HttpResponseMessage resposta = await HTTPClient.GetAsync(EndPoints.Products);
                 string Conteudo = await resposta.Content.ReadAsStringAsync();
 
                 if (resposta.IsSuccessStatusCode)
@@ -173,7 +174,7 @@ namespace Trading.Operations.Implementation.CoinBasePro
         {
             try
             {
-                using HttpRequestMessage requisicao = GetRequest(HttpMethod.Get, "/accounts");
+                using HttpRequestMessage requisicao = GetRequest(HttpMethod.Get, EndPoints.Accounts);
                 HttpResponseMessage resposta = await HTTPClient.SendAsync(requisicao);
 
                 string Conteudo = await resposta.Content.ReadAsStringAsync();
@@ -201,7 +202,7 @@ namespace Trading.Operations.Implementation.CoinBasePro
                 throw new AuthorizationException("Para essa operação, são necessarias as informações de Authorização do usuario");
             }
 
-            HttpRequestMessage requisicao = new HttpRequestMessage(method, HTTPClient.BaseAddress + url);
+            HttpRequestMessage requisicao = new HttpRequestMessage(method, EndPoints.Base + url);
             requisicao.Headers.Add("CB-ACCESS-KEY", Authorization.Key);
             requisicao.Headers.Add("CB-ACCESS-SIGN", Authorization.GetSign(url, method, jsonBody));
             requisicao.Headers.Add("CB-ACCESS-TIMESTAMP", Authorization.TimeStamp);
@@ -219,7 +220,7 @@ namespace Trading.Operations.Implementation.CoinBasePro
         {
             try
             {
-                HttpResponseMessage requisicao = await HTTPClient.GetAsync("/time");
+                HttpResponseMessage requisicao = await HTTPClient.GetAsync(EndPoints.Time);
                 string conteudo = await requisicao.Content.ReadAsStringAsync();
 
                 if (requisicao.IsSuccessStatusCode)
