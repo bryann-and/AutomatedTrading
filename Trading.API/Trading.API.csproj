@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DatabaseVersioning\DatabaseVersioning.csproj" />
     <ProjectReference Include="..\Trading\Trading.csproj" />
   </ItemGroup>
 

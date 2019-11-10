@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Scripts\Script2019-11-09-23-00.sql" />
+    <None Remove="Scripts\Script2019-11-09-23-15.sql" />
+    <None Remove="Scripts\Script2019-11-09-23-30.sql" />
+    <None Remove="Scripts\Script2019-11-09-23-40.sql" />
+    <None Remove="Scripts\Script2019-11-10-00-00.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\Script2019-11-10-00-00.sql" />
+    <EmbeddedResource Include="Scripts\Script2019-11-09-23-40.sql" />
+    <EmbeddedResource Include="Scripts\Script2019-11-09-23-30.sql" />
+    <EmbeddedResource Include="Scripts\Script2019-11-09-23-15.sql" />
+    <EmbeddedResource Include="Scripts\Script2019-11-09-23-00.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dbup-sqlserver" Version="4.2.0" />
+  </ItemGroup>
+
+</Project>

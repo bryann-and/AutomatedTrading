@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DatabaseVersioning;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -48,6 +49,12 @@ namespace Trading.API
             {
                 options.EnableDebugLogger = false;
             });
+
+            // Rodando o DbUp para aplicar as alterações de banco de dados
+            if (!DbVersioning.VerificarVersaoBd(Configuration.GetConnectionString("DEV")))
+            {
+                throw new Exception("Erro ao executar versionamento do banco");
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
