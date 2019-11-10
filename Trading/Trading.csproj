@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Automation\Definitions\" />
-    <Folder Include="Diagrams\" />
   </ItemGroup>
 
   <ItemGroup>
