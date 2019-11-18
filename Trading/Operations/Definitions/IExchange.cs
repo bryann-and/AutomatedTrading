@@ -8,6 +8,12 @@ namespace Trading.Operations.Definitions
     /// Definição das propriedades e metodos basicos de operações fornecidas pelos Exchanges
     /// </summary>
     public interface IExchange<AuthorizationType, CurrencyType, BalanceType, AccountType, TickerType, OrderType>
+        where AuthorizationType : IAuthorization
+        where CurrencyType : BaseCurrency
+        where BalanceType : BaseBalance
+        where AccountType : BaseAccount
+        where TickerType : class
+        where OrderType : BaseOrder
     {
         /// <summary>
         /// Busca as informações de valores de uma moeda especifica no Exchange

@@ -10,9 +10,13 @@
     <None Remove="Scripts\Script2019-11-09-23-30.sql" />
     <None Remove="Scripts\Script2019-11-09-23-40.sql" />
     <None Remove="Scripts\Script2019-11-10-00-00.sql" />
+    <None Remove="Scripts\Script2019-11-17-21-23.sql" />
+    <None Remove="Scripts\Script2019-11-17-21-26.sql" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\Script2019-11-17-21-26.sql" />
+    <EmbeddedResource Include="Scripts\Script2019-11-17-21-23.sql" />
     <EmbeddedResource Include="Scripts\Script2019-11-10-00-00.sql" />
     <EmbeddedResource Include="Scripts\Script2019-11-09-23-40.sql" />
     <EmbeddedResource Include="Scripts\Script2019-11-09-23-30.sql" />

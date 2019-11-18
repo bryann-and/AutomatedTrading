@@ -13,7 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trading", "Trading\Trading.csproj", "{6258E1A9-E650-4E4C-B1F8-F59974F5B812}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseVersioning", "DatabaseVersioning\DatabaseVersioning.csproj", "{2EB3A0AB-47B4-4F0C-BA21-590B08855651}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatabaseVersioning", "DatabaseVersioning\DatabaseVersioning.csproj", "{2EB3A0AB-47B4-4F0C-BA21-590B08855651}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseServices", "DatabaseServices\DatabaseServices.csproj", "{492DDCC9-E782-4071-815D-325923BE98B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{2EB3A0AB-47B4-4F0C-BA21-590B08855651}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EB3A0AB-47B4-4F0C-BA21-590B08855651}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EB3A0AB-47B4-4F0C-BA21-590B08855651}.Release|Any CPU.Build.0 = Release|Any CPU
+		{492DDCC9-E782-4071-815D-325923BE98B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{492DDCC9-E782-4071-815D-325923BE98B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{492DDCC9-E782-4071-815D-325923BE98B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{492DDCC9-E782-4071-815D-325923BE98B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

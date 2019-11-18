@@ -6,7 +6,7 @@ namespace DatabaseVersioning
 {
     public static class DbVersioning
     {
-        public static bool VerificarVersaoBd(string connectionString)
+        public static bool Execute(string connectionString)
         {
             UpgradeEngine upgrader =
                 DeployChanges.To

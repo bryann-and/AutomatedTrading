@@ -51,7 +51,7 @@ namespace Trading.API
             });
 
             // Rodando o DbUp para aplicar as alterações de banco de dados
-            if (!DbVersioning.VerificarVersaoBd(Configuration.GetConnectionString("DEV")))
+            if (!DbVersioning.Execute(Configuration.GetConnectionString("DEV")))
             {
                 throw new Exception("Erro ao executar versionamento do banco");
             }
