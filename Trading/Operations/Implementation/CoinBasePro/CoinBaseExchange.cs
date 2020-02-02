@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Trading.Operations.Definitions;
 using Trading.Operations.ExchangeEndpoints;
 using Trading.Operations.Exceptions;
+using Database.Entities.CoinBase;
 
 namespace Trading.Operations.Implementation.CoinBasePro
 {

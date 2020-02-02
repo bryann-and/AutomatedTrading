@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Linq;
 using System.Text;
 
-namespace DatabaseServices.Generics
+namespace DatabaseServices.Services
 {
     public class DbService<Entidade> where Entidade : class
     {

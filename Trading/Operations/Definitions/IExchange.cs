@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Database.Entities.Base;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Trading.Entities.Definitions;
 

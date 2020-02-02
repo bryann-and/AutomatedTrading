@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trading", "Trading\Trading.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatabaseVersioning", "DatabaseVersioning\DatabaseVersioning.csproj", "{2EB3A0AB-47B4-4F0C-BA21-590B08855651}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseServices", "DatabaseServices\DatabaseServices.csproj", "{492DDCC9-E782-4071-815D-325923BE98B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database", "DatabaseServices\Database.csproj", "{492DDCC9-E782-4071-815D-325923BE98B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

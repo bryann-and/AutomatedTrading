@@ -1,13 +1,17 @@
-﻿using Newtonsoft.Json;
+﻿using Database.Entities.Base;
+using Database.Entities.Enums;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
-using Trading.Entities.Definitions;
 
-namespace Trading.Operations.Implementation.CoinBasePro
+namespace Database.Entities.CoinBase
 {
     public sealed class CoinBaseOrder : BaseOrder
     {
-        public string Id { get; set; }
+        public long? BaseOrderId { get; set; }
+        public BaseOrder BaseOrder { get; set; }
+
+        public string OrderId { get; set; }
         public string Status { get; set; }
 
         [JsonProperty("product_id")]

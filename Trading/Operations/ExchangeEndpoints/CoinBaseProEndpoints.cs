@@ -1,4 +1,5 @@
-﻿using Trading.Operations.Implementation.CoinBasePro;
+﻿using Database.Entities.CoinBase;
+using Trading.Operations.Implementation.CoinBasePro;
 
 namespace Trading.Operations.ExchangeEndpoints
 {
@@ -23,7 +24,7 @@ namespace Trading.Operations.ExchangeEndpoints
 
         public string GetEndpointOrderId(CoinBaseOrder order)
         {
-            return Orders + "/" + order.Id;
+            return Orders + "/" + order.OrderId;
         }
 
         public string GetEndpointAccountId(CoinBaseAccount account)

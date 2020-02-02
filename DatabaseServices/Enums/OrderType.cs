@@ -1,4 +1,4 @@
-﻿namespace Trading.Entities.Definitions
+﻿namespace Database.Entities.Enums
 {
     public enum OrderType
     {

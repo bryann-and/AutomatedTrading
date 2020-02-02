@@ -80,7 +80,7 @@
               <Y>-250 px</Y>
             </Location>
             <Size>
-              <Width>140 px</Width>
+              <Width>170 px</Width>
               <Height>124 px</Height>
             </Size>
             <DbOid>
@@ -172,7 +172,7 @@
               <Y>-250 px</Y>
             </Location>
             <Size>
-              <Width>153 px</Width>
+              <Width>180 px</Width>
               <Height>144 px</Height>
             </Size>
             <DbOid>
@@ -237,7 +237,7 @@
             <PortAnchors>
               <Port xsi:type="LinkPort">
                 <Location>
-                  <X>80 px</X>
+                  <X>65 px</X>
                   <Y>0 px</Y>
                 </Location>
                 <Anchors>None</Anchors>
@@ -329,7 +329,7 @@
             <PortAnchors>
               <Port xsi:type="LinkPort">
                 <Location>
-                  <X>83.5 px</X>
+                  <X>70 px</X>
                   <Y>0 px</Y>
                 </Location>
                 <Anchors>None</Anchors>
