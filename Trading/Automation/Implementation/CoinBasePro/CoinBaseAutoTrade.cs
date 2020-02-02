@@ -13,6 +13,10 @@ namespace Trading.Automation.Implementation.CoinBasePro
 {
     public class CoinBaseAutoTrade : IAutoTrade<CoinBaseOrder, CoinBaseProduct>
     {
+        // Serviços de acesso ao banco
+        private DbService<CoinBaseOrder> coinBaseOrderService { get; set; }
+
+
         private CoinBaseExchange Exchange { get; set; }
         private Func<AutoTradingContext> Context { get; set; }
         private Usuario Usuario { get; set; }
@@ -22,6 +26,7 @@ namespace Trading.Automation.Implementation.CoinBasePro
             Usuario = usuario;
             Exchange = exchange;
             Context = contexto;            
+            coinBaseOrderService = new DbService<CoinBaseOrder>(Context);
         }
 
         public CoinBaseOrder Comprar(CoinBaseProduct destino)
@@ -38,9 +43,13 @@ namespace Trading.Automation.Implementation.CoinBasePro
             // Inserir no banco
         }
 
+        public CoinBaseOrder BuscarUltimaOperacao()
+        {
+            return coinBaseOrderService.BuscarUltimo(o => o.BaseOrder.CodigoUsuario == Usuario.Codigo);
+        }
+
         private CoinBaseOrder PersistirOrder(CoinBaseOrder order, OrderType tipo, OrderSide lado)
         {
-            DbService<CoinBaseOrder> coinBaseOrderService = new DbService<CoinBaseOrder>(Context);
             order.BaseOrder = new BaseOrder
             {
                 CodigoUsuario = Usuario.Codigo,

@@ -8,9 +8,9 @@ namespace Database.Services
     {
         Entidade Criar(Entidade entidade);
         Entidade Atualizar(Entidade entidade);
-        Entidade Deletar(Entidade entidade);
+        void Deletar(Entidade entidade);
 
         IEnumerable<Entidade> Buscar(Expression<Func<Entidade, bool>> expression);
-        IEnumerable<Entidade> BuscarUm(Expression<Func<Entidade, bool>> expression);
+        Entidade BuscarUm(Expression<Func<Entidade, bool>> expression);
     }
 }

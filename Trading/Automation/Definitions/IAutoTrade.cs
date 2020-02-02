@@ -16,5 +16,10 @@ namespace Trading.Automation.Definitions
         /// </summary>
         /// <param name="origem">Moeda a ser vendida</param>
         OrderType Vender(CurrencyType origem);
+
+        /// <summary>
+        /// Busca a ultima operação realizada
+        /// </summary>
+        OrderType BuscarUltimaOperacao();
     }
 }

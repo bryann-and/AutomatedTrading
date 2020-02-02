@@ -6,7 +6,8 @@ using System.Linq;
 
 namespace Database.Services
 {
-    public class DbService<Entidade> where Entidade : class
+    public class DbService<Entidade> : IDbService<Entidade>
+        where Entidade : class
     {
         protected Func<DbContext> DbContext { get; set; }
 
@@ -52,11 +53,30 @@ namespace Database.Services
             }
         }
 
-        public virtual Entidade BuscarUm(Expression<Func<Entidade, bool>> expression)
+        public virtual Entidade BuscarUm(Expression<Func<Entidade, bool>> expression, List<Expression<Func<Entidade, object>>> includes = null)
         {
             using (DbContext contexto = DbContext.Invoke())
             {
-                return contexto.Set<Entidade>().AsNoTracking().Where(expression).FirstOrDefault();
+                IQueryable<Entidade> query = contexto.Set<Entidade>().AsNoTracking().Where(expression);
+                AdicionarRelacoes(query, includes);
+
+                return query.FirstOrDefault();
+            }
+        }
+
+        public virtual Entidade BuscarUltimo(Expression<Func<Entidade, bool>> expression, List<Expression<Func<Entidade, object>>> includes = null)
+        {
+            using (DbContext contexto = DbContext.Invoke())
+            {
+                return contexto.Set<Entidade>().AsNoTracking().Where(expression).LastOrDefault();
+            }
+        }
+
+        private void AdicionarRelacoes(IQueryable<Entidade> query, List<Expression<Func<Entidade, object>>> includes)
+        {
+            foreach (Expression<Func<Entidade, object>> include in includes)
+            {
+                query.Include(include.nam)
             }
         }
     }
