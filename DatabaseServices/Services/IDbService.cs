@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace DatabaseServices.Services
+namespace Database.Services
 {
     public interface IDbService<Entidade>
     {

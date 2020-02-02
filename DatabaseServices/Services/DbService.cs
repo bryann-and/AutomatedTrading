@@ -3,9 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Linq;
-using System.Text;
 
-namespace DatabaseServices.Services
+namespace Database.Services
 {
     public class DbService<Entidade> where Entidade : class
     {
@@ -16,7 +15,7 @@ namespace DatabaseServices.Services
             DbContext = contexto;
         }
 
-        protected virtual Entidade Criar(Entidade entidade)
+        public virtual Entidade Criar(Entidade entidade)
         {
             using (DbContext contexto = DbContext.Invoke())
             {
@@ -26,7 +25,7 @@ namespace DatabaseServices.Services
             }
         }
 
-        protected virtual Entidade Atualizar(Entidade entidade)
+        public virtual Entidade Atualizar(Entidade entidade)
         {
             using (DbContext contexto = DbContext.Invoke())
             {
@@ -34,9 +33,9 @@ namespace DatabaseServices.Services
                 contexto.SaveChanges();
                 return entidade;
             }
-        }        
+        }
 
-        protected virtual void Deletar(Entidade entidade)
+        public virtual void Deletar(Entidade entidade)
         {
             using (DbContext contexto = DbContext.Invoke())
             {
@@ -45,7 +44,7 @@ namespace DatabaseServices.Services
             }
         }
 
-        protected virtual IEnumerable<Entidade> Buscar(Expression<Func<Entidade, bool>> expression)
+        public virtual IEnumerable<Entidade> Buscar(Expression<Func<Entidade, bool>> expression)
         {
             using (DbContext contexto = DbContext.Invoke())
             {
@@ -53,7 +52,7 @@ namespace DatabaseServices.Services
             }
         }
 
-        protected virtual Entidade BuscarUm(Expression<Func<Entidade, bool>> expression)
+        public virtual Entidade BuscarUm(Expression<Func<Entidade, bool>> expression)
         {
             using (DbContext contexto = DbContext.Invoke())
             {

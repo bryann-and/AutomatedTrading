@@ -6,7 +6,7 @@ using System;
 
 namespace Database.Entities.CoinBase
 {
-    public sealed class CoinBaseOrder : BaseOrder
+    public sealed class CoinBaseOrder
     {
         public long? BaseOrderId { get; set; }
         public BaseOrder BaseOrder { get; set; }
