@@ -38,9 +38,9 @@ namespace Trading.API.Controllers
                 CoinBaseExchange coinBase = new CoinBaseExchange(cliente.CreateClient("coinbase"), EndPoints);
                 coinBase.SetAuthorization(new CoinBaseAuthorization
                 {
-                    Secret = "Y03CqYaz7etJ7jXenTB3duzskYgjrpleaAB9DAM+y4cmqK8VhsUKazZM3g6/5rR0ZmDVjRvYa/Xsd/XNtaE+lw==",
-                    PassPhrase = "qpzyxsuh2x",
-                    Key = "0dcc6b92f4b00953ab696b5b2695032a"
+                    Secret = "",
+                    PassPhrase = "",
+                    Key = ""
                 });
 
                 //List<CoinBaseAccount> contas = await coinBase.GetAccounts();
